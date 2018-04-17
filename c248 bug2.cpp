@@ -1,7 +1,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
-#define mod0 1e9+7
+#define mod0 1000000007
 #define N 1048576
 
 using namespace std;
