@@ -1,7 +1,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
-#define mod0 1000000007
+#define mm 1000000007
 #define N 1048576
 
 using namespace std;
@@ -69,7 +69,7 @@ int main()
 			{
 				for(int i=iter2->second;i>0;i--)
 				{
-					ansTmp=(ansTmp*iter2->first)%mod0;
+					ansTmp=(ansTmp*iter2->first)%mm;
 				}
 			}
 			
