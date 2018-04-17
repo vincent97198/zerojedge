@@ -1,8 +1,8 @@
 #include <iostream>
 #include <map>
 #include <vector>
-
-const int mod0=1e9+7; const int N=1048576;
+#define mod0 1e9+7
+#define N 1048576
 
 using namespace std;
 
