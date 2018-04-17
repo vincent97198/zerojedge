@@ -65,7 +65,7 @@ int main()
 				iter++;
 			}
 			
-			for(auto iter2=son.begin();iter2!=son.end();iter2++)
+			for(map<int,int>::iterator iter2=son.begin();iter2!=son.end();iter2++)
 			{
 				for(int i=iter2->second;i>0;i--)
 				{
