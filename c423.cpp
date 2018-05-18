@@ -75,12 +75,12 @@ int main(void)
        set<string>::iterator iter=ans.begin();
 	   
 	    if(ans.size()==1)
-		  {
+		 {
 			for(int i=0;i<n;i++)
-				cout << 0;
+			cout << 0;
 					
 			cout << endl;
-			}
+		}
 
        while(ans.size()>1)
        {
