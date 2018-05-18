@@ -76,10 +76,10 @@ int main(void)
 	   
 	    if(ans.size()==1)
 		  {
-				for(int i=0;i<n;i++)
-					cout << 0;
+			for(int i=0;i<n;i++)
+				cout << 0;
 					
-				cout << endl;
+			cout << endl;
 			}
 
        while(ans.size()>1)
