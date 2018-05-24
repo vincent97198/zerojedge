@@ -4,7 +4,7 @@
 
 using namespace std;
 
-const int N=10000;
+const int N=5e4;
 
 struct point
 {
@@ -49,17 +49,22 @@ void dSearch(int now,int father,int NowDistance) //子樹中每點到根的距�
 	tmp++;
 	
 	for(int i=0;i<saveSon[now].size();i++)
-		if(!visit[saveSon[now][i].p] && !saveSon[now][i].p!=father)
+		if(!visit[saveSon[now][i].p] && saveSon[now][i].p!=father)
 			dSearch(saveSon[now][i].p,now,NowDistance+saveSon[now][i].d);
 }
 
-int cal(int root,int x)
+int cal(int root,int x) //計算符合的個數
 {
 	int ans0=0;
+	tmp=0;
 
 	dSearch(root,0,x);
 	
 	sort(dist,dist+tmp);
+	
+	/*for(int i=0;i<tmp;i++)
+	 cout << dist[i] << " ";
+	 cout << endl;*/
 	
 	int i=0,j=tmp-1;
 	
@@ -74,19 +79,20 @@ int cal(int root,int x)
 		i++;
 	}
 	
-	visit[root]=true;
+	//visit[root]=true;
 	
 	return ans0;
 }
 
-void solve(int u)
+void solve(int u)  //處理中心
 {
 	tmp=0;
 	min0=987654321;
 	
 	dfs(u,0,n);
-	
+	//cout << minNode << endl;
 	ans+=cal(minNode,0);
+	visit[minNode]=true;
 	
 	for(int i=0;i<saveSon[u].size();i++)
 	{
@@ -101,7 +107,8 @@ void solve(int u)
 
 int main()
 {
-	
+	int t;
+
 	while(cin >> n >> k && n!=0)
 	{	
 		for(int i=0;i<=k;i++)
