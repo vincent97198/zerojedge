@@ -24,7 +24,7 @@ void dfs(int now,int father,int n) //找重心
 
 	for(int i=0;i<saveSon[now].size();i++)
 	{
-		if(saveSon[now][i].p!=father)
+		if(saveSon[now][i].p!=father && !visit[saveSon[now][i].p])
 		{
 			dfs(saveSon[now][i].p,now,n);
 			
@@ -43,21 +43,21 @@ void dfs(int now,int father,int n) //找重心
 	}
 }
 
-void dSearch(int now,int NowDistance) //子樹中每點到根的距離
+void dSearch(int now,int father,int NowDistance) //子樹中每點到根的距離
 {
 	dist[tmp]=NowDistance;
 	tmp++;
 	
 	for(int i=0;i<saveSon[now].size();i++)
-		if(!visit[saveSon[now][i].p])
-			dSearch(saveSon[now][i].p,dist[tmp]+saveSon[now][i].d);
+		if(!visit[saveSon[now][i].p] && !saveSon[now][i].p!=father)
+			dSearch(saveSon[now][i].p,now,NowDistance+saveSon[now][i].d);
 }
 
 int cal(int root,int x)
 {
 	int ans0=0;
 
-	dSearch(root,x);
+	dSearch(root,0,x);
 	
 	sort(dist,dist+tmp);
 	
@@ -66,8 +66,10 @@ int cal(int root,int x)
 	while(j>i)
 	{
 		while(dist[i]+dist[j]>k && j>i)
+		{
 			j--;
-			
+		}
+		
 		ans0+=j-i;
 		i++;
 	}
@@ -90,7 +92,7 @@ void solve(int u)
 	{
 		if(!visit[saveSon[u][i].p])
 		{
-			ans-=cal(saveSon[u][i].p, saveSon[u][i].d);
+			ans-=cal(saveSon[u][i].p,saveSon[u][i].d);
 			
 			solve(saveSon[u][i].p);
 		}
