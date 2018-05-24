@@ -4,37 +4,36 @@
 
 using namespace std;
 
-const int N=1e4;
+const int N=10000;
 
 struct point
 {
 	int p,d;
 };
 
-vector<int> save; //存割點
 vector<point> saveSon[N+1];
-int d[N+1],dist[N+1];
+int D[N+1],dist[N+1];
 int minNode,min0=987654321;
 int tmp,n,k,ans;
 bool visit[N+1];
 
 void dfs(int now,int father,int n) //找重心
 {
-	d[now]=1;
+	D[now]=1;
 	int minTreeNode=0;
 
-	for(int i=0;i<=saveSon[now].size();i++)
+	for(int i=0;i<saveSon[now].size();i++)
 	{
 		if(saveSon[now][i].p!=father)
 		{
 			dfs(saveSon[now][i].p,now,n);
 			
-			d[now]+=d[saveSon[now][i].p];
-			minTreeNode=max(minTreeNode,d[saveSon[now][i].p]);
+			D[now]+=D[saveSon[now][i].p];
+			minTreeNode=max(minTreeNode,D[saveSon[now][i].p]);
 		}
 	}
 	
-	minTreeNode=max(minTreeNode,n-d[now]);
+	minTreeNode=max(minTreeNode,n-D[now]);
 	
 	if(minTreeNode<min0)
 	{
@@ -75,7 +74,7 @@ int cal(int root,int x)
 	
 	visit[root]=true;
 	
-	return ans;
+	return ans0;
 }
 
 void solve(int u)
