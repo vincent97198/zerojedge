@@ -1,70 +1,164 @@
 #include <iostream>
-#include <math.h>
+#include <vector>
 #include <algorithm>
 
 using namespace std;
 
-struct point 
+const int N=5e4;
+
+struct point
 {
-	int l,p;
+	int p,d;
 };
 
-struct cmp
-{  
-    bool operator()( const point& a , const point& b )const
-	  {  
-        return a.l < b.l ;      
-    }  
-}; 
+bool cmp(int a,int b)
+{
+    return a<b;
+}
 
- 
+vector<point> saveSon[N+1];
+vector<int> dists,circleDist[N+1];
+int D[N+1],dist[N+1];   // D為子節點數 dist存距離
+int minNode,min0=987654321;
+int tmp,n,k,ans;
+bool visit[N+1],circle[N+1];
+
+void dfs(int now,int father,int size0) //找重心
+{
+	D[now]=1;
+	circle[now]=true;
+	int minTreeNode=0;
+
+	for(int i=0;i<saveSon[now].size();i++)
+	{
+		if(saveSon[now][i].p!=father && !visit[saveSon[now][i].p] && !circle[saveSon[now][i].p])
+		{
+			dfs(saveSon[now][i].p,now,size0);
+
+			D[now]+=D[saveSon[now][i].p];
+			minTreeNode=max(minTreeNode,D[saveSon[now][i].p]);
+		}
+	}
+
+	minTreeNode=max(minTreeNode,size0-D[now]);
+
+	if(minTreeNode<min0)
+	{
+		min0=minTreeNode;
+
+		minNode=now;
+	}
+
+	circle[now]=false;
+}
+
+void dSearch(int now,int father,int NowDistance) //子樹中每點到根的距離
+{
+	dist[now]=NowDistance;
+	circle[now]=true;
+	dists.push_back(NowDistance);
+	tmp++;
+
+	for(int i=0;i<saveSon[now].size();i++)
+		if(!visit[saveSon[now][i].p] && saveSon[now][i].p!=father && !circle[saveSon[now][i].p])
+            dSearch(saveSon[now][i].p,now,NowDistance+saveSon[now][i].d);
+
+    circle[now]=false;
+}
+
+
+int cal(int root,int x) //計算符合的個數
+{
+    dists.clear();
+
+	int ans0=0;
+	tmp=0;
+
+	dSearch(root,0,x);
+
+	sort(dists.begin(),dists.end(),cmp);
+
+	int i=0,j=dists.size()-1;
+
+	while(j>i)
+	{
+		while(dists[i]+dists[j]>k && j>i)
+		{
+			j--;
+		}
+
+        if(j>i)
+            ans0+=j-i;
+
+		i++;
+	}
+
+	return ans0;
+}
+
+int solve(int u,int size0)  //處理中心
+{
+	tmp=0;
+	min0=987654321;
+
+	dfs(u,0,size0);
+
+    ans+=cal(minNode,0);
+
+	visit[minNode]=true;
+	u=minNode;
+
+	for(int i=0;i<saveSon[u].size();i++)
+	{
+		if(!visit[saveSon[u][i].p])
+		{
+			ans-=cal(saveSon[u][i].p,saveSon[u][i].d);
+
+			solve(saveSon[u][i].p,D[saveSon[u][i].p]);
+		}
+	}
+
+	return 0;
+}
 
 int main()
 {
 	int t;
-	
+
 	while(cin >> t)
-	{
-		int n,k;
-		
-		while(cin >> n >> k)
-		{
-			vector<int> d[n+1];
-			
-			for(int i=0;i<n;i++)
-			{
-				int a,b;
-				cin >> a >> b;
-				
-				point tmp; tmp.p=a; tmp.l=b;
-				
-				d[i].puah_back(tmp);
-				
-				tmp.p=i;
-				
-				d[a].push_back(tmp);
-			}
-			
-			for(int i=1;i<=n;i++)
-			{
-				priority_queue<point> q;
-				
-				for(int j=0;j<d[i].size();j++)
-				{
-					point a; a.p=d[i][j].p; a.l=d[i][j].l;
-					
-					q.push(a);
-				}
-				
-				while(!q.empty())
-				{
-					point a=q.pop();
-					
-				}
-			}
-		}
-	
-	}
-	
-	return 0;
+    {
+        while(cin >> n >> k && t--)
+        {
+            for(int i=0;i<=n;i++)
+            {
+                visit[i]=false;
+                D[i]=0;
+                dist[i]=0;
+                saveSon[i].clear();
+                circle[i]=false;
+            }
+
+
+            for(int i=1;i<=n;i++)
+            {
+                int u,l;
+
+                cin >> u >> l;
+
+                if(u==i) continue;
+
+                point tmp; tmp.p=i; tmp.d=l;
+
+                saveSon[u].push_back(tmp);
+                tmp.p=u;
+                saveSon[i].push_back(tmp);
+            }
+
+            ans=0;
+
+            solve(1,n);
+
+            cout << ans << endl;
+        }
+    }
 }
