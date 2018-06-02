@@ -17,21 +17,54 @@ bool cmp(int a,int b)
 }
 
 vector<point> saveSon[N+1];
-vector<int> dists,circleDist[N+1];
+vector<int> dists,circle[N];
 int D[N+1],dist[N+1];   // D為子節點數 dist存距離
 int minNode,min0=987654321;
-int tmp,n,k,ans;
-bool visit[N+1],circle[N+1];
+int tmp=0,n,k,ans;
+bool visit[N+1],circleVisit[N+1];
+
+bool findCircle(int now,int father)
+{
+    if(circleVisit[now])
+    {
+
+        for(int i=0;i<circle[tmp].size();i++)
+        {
+            if(circle[tmp][i]!=now)
+                circle[tmp].erase(circle.begin()+i);
+            else
+                return true;
+        }
+    }
+    else
+    {
+        circleVisit[now]=true;
+        circle[tmp].push_back(now);
+
+        for(int i=0;i<saveSon[now].size();i++)
+        {
+            if(saveSon[now][i].p==father)
+                continue;
+
+            if(!findCircle(saveSon[now][i].p,now))
+                circle[tmp].erase(circle.end()-1);
+            else
+                return true;
+        }
+
+        return false;
+
+    }
+}
 
 void dfs(int now,int father,int size0) //找重心
 {
 	D[now]=1;
-	circle[now]=true;
 	int minTreeNode=0;
 
 	for(int i=0;i<saveSon[now].size();i++)
 	{
-		if(saveSon[now][i].p!=father && !visit[saveSon[now][i].p] && !circle[saveSon[now][i].p])
+		if(saveSon[now][i].p!=father && !visit[saveSon[now][i].p])
 		{
 			dfs(saveSon[now][i].p,now,size0);
 
@@ -49,7 +82,6 @@ void dfs(int now,int father,int size0) //找重心
 		minNode=now;
 	}
 
-	circle[now]=false;
 }
 
 void dSearch(int now,int father,int NowDistance) //子樹中每點到根的距離
@@ -57,13 +89,10 @@ void dSearch(int now,int father,int NowDistance) //子樹中每點到根的距�
 	dist[now]=NowDistance;
 	circle[now]=true;
 	dists.push_back(NowDistance);
-	tmp++;
 
 	for(int i=0;i<saveSon[now].size();i++)
-		if(!visit[saveSon[now][i].p] && saveSon[now][i].p!=father && !circle[saveSon[now][i].p])
+		if(!visit[saveSon[now][i].p] && saveSon[now][i].p!=father)
             dSearch(saveSon[now][i].p,now,NowDistance+saveSon[now][i].d);
-
-    circle[now]=false;
 }
 
 
@@ -98,7 +127,6 @@ int cal(int root,int x) //計算符合的個數
 
 int solve(int u,int size0)  //處理中心
 {
-	tmp=0;
 	min0=987654321;
 
 	dfs(u,0,size0);
@@ -135,7 +163,8 @@ int main()
                 D[i]=0;
                 dist[i]=0;
                 saveSon[i].clear();
-                circle[i]=false;
+                circleVisit[i]=false;
+                circle.clear();
             }
 
 
@@ -156,7 +185,19 @@ int main()
 
             ans=0;
 
-            solve(1,n);
+            findCircle(1,0);
+
+            for(int i=1;i<=n;i++)
+                if(!circleVisit[i])
+                {
+                    tmp++;
+                    findCircle(i,0);
+                }
+
+
+
+
+            //solve(1,n);
 
             cout << ans << endl;
         }
