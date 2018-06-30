@@ -36,9 +36,10 @@ struct point2
 	int key,root;
 };
  
-vector<point> saveSon[N+1];
-vector<point2> test;
-vector<int> dists,circle[N];
+vector<point> saveSon[N+1];     //儲存 線
+vector<point2> test;            //假裝他是BST
+vector<int> dists,circle[N];   //dists就是dists,circle的數,N=>第幾個獨立塊
+vector<int> distsCircle[N];       //每個節點到circleRoot節點的距離
 int D[N+1],dist[N+1];   // D為子節點數 dist存距離
 int minNode,min0=987654321;
 int tmp=0,n,k,ans;
@@ -91,7 +92,12 @@ bool findCircle(int now,int father)    //找水母頭
  
     }
 }
- 
+
+void dSearchCircle(int now,int nowDistance,int )
+{
+    
+}
+
 void dfs(int now,int father,int size0) //找重心
 {
 	D[now]=1;
