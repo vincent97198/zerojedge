@@ -1,0 +1,30 @@
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+	int t,m,n;
+	
+	cin >> t;
+	
+	while(t-- && cin >> n >> m)
+	{
+		int l=0,r=n;
+		
+		while(l<r)
+		{
+			int x=(l+r)/2;
+		
+			if((n-x)*(n-x-1)/2+x>=m)
+				l=x;
+			else
+				r=x;
+		}
+		
+		cout << l << endl;
+	}
+	
+	return 0;
+}
+ 
