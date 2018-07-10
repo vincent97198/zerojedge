@@ -2,44 +2,31 @@
 #include <vector>
 #include <algorithm>
 #include <memory.h>
-#define mod0 1000000007
+#include <stack>
+#define LL long long
 
 using namespace std;
 
-int ans;
+LL ans;
 
-void dfs(int tragic,int now,int father,int loli[],int loliSum[],vector<int> brige[])
+struct bag
 {
-	loliSum[now]=loli[now];
-
-	for(int i=0;i<brige[now].size();i++)
-	{
-		if(father!=brige[now][i])
-		{
-			dfs(tragic,brige[now][i],now,loli,loliSum,brige);
-			
-			loliSum[now]+=loliSum[brige[now][i]];
-		}
-	}
-	
-	if(loliSum[now]>=tragic)
-	{
-		loliSum[now]=0;
-		ans++;
-	}
-}
+	LL tragic,now,father,i;
+};
 
 int main()
 {
+
 	long long int n,k;
+	
 	
 	while(cin >> n >> k)
 	{
-		int loli[n+1],loliSum[n+1]; 
+		LL loli[n+1],loliSum[n+1]; 
 
 		vector<int> brige[n+1];
 	
-		for(int i=0;i<n;i++)
+		for(int i=1;i<=n;i++)
 			cin >> loli[i];
 			
 		for(int i=0;i<n-1;i++)
@@ -52,25 +39,74 @@ int main()
 			brige[b].push_back(a);
 		}
 		
-		//memset(visit,0,sizeof(visit));
+		LL R=1,L=1;
 		
-		int R=0,L=1;
-		
-		for(int i=0;i<n;i++)
+		for(int i=1;i<=n;i++)
 				R+=loli[i];
 		
-		//ans=0;
-		
 		while(R-L>1)
-		{	
-			ans=0;		
-			dfs((R+L)/2,1,1,loli,loliSum,brige);
+		{
+			stack<bag> stk,stk2;
+			bag tmp;  tmp.tragic=(R+L)/2; tmp.now=1; tmp.father=1; tmp.i=0;
+			
+			stk.push(tmp);
+			
+			ans=0;
+			
+ func: while(!stk.empty())
+			{
+				bag tmp;
+			
+				tmp=stk.top();
+				
+				LL now=tmp.now,father=tmp.father,tragic=tmp.tragic; tmp.i=0;
+			
+				loliSum[now]=loli[now];
+				
+	func2: int i=tmp.i;
+
+				for(;i<brige[now].size();i++)
+				{
+					if(father!=brige[now][i])
+					{
+						bag tmp; tmp.tragic=tragic;  tmp.now=brige[now][i]; tmp.father=now; tmp.i=i;
+						
+						stk.push(tmp);
+						
+			 			tmp.now=now; tmp.father=father; tmp.i=i;
+						stk2.push(tmp); goto func;
+					}
+				}
+	
+				if(loliSum[now]>=tragic)
+				{
+					loliSum[now]=0;
+					ans++;
+				}
+				
+				if(!stk.empty())
+					stk.pop();
+				
+				
+				tmp=stk2.top(); stk2.pop();
+				
+				i=tmp.i; now=tmp.now;
+				
+			 	loliSum[now]+=loliSum[brige[now][i]];
+				
+				tmp.i++; 
+				
+				if(tmp.i<brige[now].size())
+					goto func2;
+				
+			}	
 			
 			if(ans>=k)
-				R=(R+L)/2;
-			else
 				L=(R+L)/2;
+			else
+				R=(R+L)/2;
 				
+				//cout << "r" <<R<<"l"<<L<< endl;
 		}
 		
 		cout << L << endl;
